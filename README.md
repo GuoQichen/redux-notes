@@ -183,6 +183,9 @@ this is notes of learn redux
     // Good
     case "DELETE":
         return state.slice(0, index).concat(state.slice(index + 1));
+    // another way
+    case 'DELETE':
+        return state.filter(({ _id }) => _id !== action.payload )
     ```
 
     update new item to state array

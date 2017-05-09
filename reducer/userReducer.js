@@ -8,5 +8,7 @@ module.exports = (state = [], action) => {
             ]
         case 'DEL_USER':
             return state.slice(0, action.payload).concat(state.slice(action.payload+1))
+        default:
+            return state
     }
 }

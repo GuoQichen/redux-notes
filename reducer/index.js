@@ -4,7 +4,7 @@
  */
 
 // utils
-const { combineReducer } = require('redux')
+const { combineReducers } = require('redux')
 
 // reducers
 const userReducer = require('./userReducer.js')
