@@ -85,10 +85,18 @@ this is notes of learn redux
         // function 
         const add = bindActionCreators(() => ({
             type: 'ADD'
-        }))
+        }), dispatch)
         add()
         ```
 
+    2. 当参数是函数的时候如何实现
+
+        ```js
+        function bindActionCreator(actionCreator, dispatch) {
+            return (...args) => dispatch(actionCreator(...args))
+        }        
+        ```
+    
 ## compose
 
     1. compose的实现，但是两种方法顺序是相反的，如果使用redux中的顺序，看起来直观，但是写起来不符合书写习惯
