@@ -4,7 +4,7 @@ module.exports = {
     addProduct: (name) => ({
         type: 'ADD_PRO',
         payload: {
-            _id: ++productCount,
+            _id: productCount++,
             name,
             date: new Date()
         }

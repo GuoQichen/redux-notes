@@ -4,7 +4,7 @@ module.exports = {
     addCategory: (name) => ({
         type: 'ADD_CAT',
         payload: {
-            _id: ++categoryCount,
+            _id: categoryCount++,
             name,
             date: new Date()
         }

@@ -17,9 +17,8 @@ const logState = () => {
 }
 
 store.subscribe(() => {
-    logState()
+    // logState()
 })
 
-action.addUser('acky')
-action.addUser('guo')
-action.addUser('qi')
+exports.action = action
+exports.store = store

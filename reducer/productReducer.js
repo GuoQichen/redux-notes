@@ -7,7 +7,7 @@ module.exports = (state = [], action) => {
                 action.payload
             ]
         case 'DEL_PRO':
-            return state.slice(0, action.payload).concat(state.slice(action.payload+1))
+            return state.filter(({ _id }) => _id !== action.payload)
         default:
             return state
     }
