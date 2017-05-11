@@ -62,9 +62,38 @@ store.dispatch = function dispatchAndLog(action) {
 ## 问题：崩溃报告
 如果我们想在dispatch上用多个类似打印日志这样的转化function怎么办呢
 
+另一个有用的转化function进入我的脑海中，就是在生产环境报告js的错误。全局的`window.onerror`事件是不可靠的因为它在一些老的浏览器没有错误堆栈的信息，这对于理解错误是如何产生的至关重要
 
+如果任何时候dispatch一个action抛出错误，我们会发送带有错误堆栈信息到崩溃报告服务器，例如Sentry，这个信息包括，哪个action导致了这个错误，当前的状态是怎样的？这样在开发环境重现错误就会更容易
 
+然而，保持打印日志和崩溃报告分离是很重要的。理想状态我们希望它们能在不同的模块，可能是在不同的包中。否则我们就不能构建起中间件的生态系统
 
-
-
-
+如果打印日志和崩溃报告是分离的工具，它们可能这样:  
+```js
+function patchStoreToAddLogging(store) {
+    let next = store.dispatch
+    store.dispatch = function dispatchAndLog(action) {
+        console.log('dispatching', action)
+        let result = next(action)
+        console.log('next state', store.getState())
+        return result // 为了和native dispatch行为保持一致，store.dispatch() return action
+    }
+}
+function patchStoreToAddCrashReporting(store) {
+    let next = store.dispatch // 此时的store.dispatch已经是经过loggin包装过的函数dispatchAndLog
+    store.dispatch = function dispatchAndReportErrors(action) {
+        try {
+            return next(action)
+        } catch (err) {
+            console.error('Caught an exception!', err)
+            Raven.captureException(err, {
+                extra: {
+                    action,
+                    state: store.getState()
+                }
+            })
+            throw err
+        }
+    }
+}
+```  

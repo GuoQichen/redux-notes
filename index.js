@@ -20,5 +20,7 @@ store.subscribe(() => {
     // logState()
 })
 
+store.dispatch({ type: 'TEST_ACTION'}) // dispatch would return action 
+
 exports.action = action
 exports.store = store
