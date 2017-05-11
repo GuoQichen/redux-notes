@@ -45,31 +45,31 @@ this is notes of learn redux
 }    
 ```
 
-    - dispatch
+- dispatch
 
-        分发一个action，action是一个对象，例如:
+    分发一个action，action是一个对象，例如:
 
-        ```js
-        dispatch({
-            type: 'ADD_TODO',
-            payload: {
-                _id: 1,
-                text: 'this is new todo',
-                date: new Date()
-            }
-        })
-        ```
-    - subscribe
+    ```js
+    dispatch({
+        type: 'ADD_TODO',
+        payload: {
+            _id: 1,
+            text: 'this is new todo',
+            date: new Date()
+        }
+    })
+    ```
+- subscribe
 
-        添加一个listener，当dispath一个action的时候会调用，不会传递参数进去
+    添加一个listener，当dispath一个action的时候会调用，不会传递参数进去
 
-    - getState
+- getState
 
-        `return currentState`
+    `return currentState`
 
-    - replaceReducer
+- replaceReducer
 
-        替换当前的reducer为另一个reducer
+    替换当前的reducer为另一个reducer
 
 ## bindActionCreators
 
