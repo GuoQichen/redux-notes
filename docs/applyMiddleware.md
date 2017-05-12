@@ -99,3 +99,49 @@ function patchStoreToAddCrashReporting(store) {
     }
 }
 ```  
+如果这些函数作为分离的模块发布，我们之后就可以使用它们修补我们的store:  
+```js
+patchStoreToAddLogging(store)
+patchStoreToAddCrashReporting(store)
+```  
+但是还不是非常完美
+
+## 尝试#4：隐藏Monkeypatch
+Monkeypatch是一种hack. "替换你喜欢的任何方法"，那是怎样的API？让我们弄清它的本质. 在之前，我们的函数替换`store.dispatch`. 如果我们返回新的`dispatch`函数代替会怎么样?  
+```js
+function logger(store) {
+    let next = store.dispatch
+    // Previously: 
+    // store.dispatch = function dispatchAndLog(action) {
+    return function dispatchAndLog(action) {
+        console.log('dispatching', action)
+        let result = next(action)
+        console.log('next state', store.getState())
+        return result
+    }
+}
+```  
+我们可以在Redux中提供一个辅助函数，它将实际的monkeypatch作为一个实现细节:  
+```js
+function applyMiddlewareByMonkeypatching(store, middlewares) {
+    // 因为reverse()是一个in place操作，即在原数组上修改，为了每次得到正确的反序，所以copy一个原数组的浅拷贝副本
+    middlewares = middlewares.slice()
+    // 这里之所以reverse是因为函数的调用顺序和书写顺序是相反的，即先写的函数后调用
+    // 例如：[logger, crashReport]，其实是logger patch store.disptch，然后crashReport再来patch前一个函数patch后的store.dispatch
+    middlewares.reverse()
+    // Transform dispatch function with each middleware
+    middlewares.forEach(middleware => 
+        // 这里的middleware(store)返回的是一个函数，这个函数其实是一个闭包
+        // 这个闭包能访问next，也就是上一次的store.dispatch，然后再将store.dispatch替换掉
+        store.dispatch = middleware(store)
+    )
+}
+```  
+我们使用这个函数来应用多个中间件，就像这样:  
+```js
+applyMiddlewareByMonkeypatching(store, [ logger, crashReport ])
+```  
+然而，这还是一个Monkeypatch  
+事实是我们把Monkeypatch隐藏在我们的库中，但是实际上没有改变使用Monkeypatch的事实
+
+## 尝试#5: 移除Monkeypatch
