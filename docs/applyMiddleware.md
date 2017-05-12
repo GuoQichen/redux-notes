@@ -19,7 +19,9 @@ Redux的优势之一是state的改变是可预测和透明的，每次dispatch�
 最原始的方法就是每次调用`store.dispatch(action)`的时候去手动打印action和下一个state。虽然这不是一个真正的解决方案，但是这是理解问题的第一步
 
 假设，当你想创建一个todo的时候可以这样调用:  
-`store.dispatch(addTodo('Use Redux'))`  
+```js
+store.dispatch(addTodo('Use Redux'))
+```  
 如果要打印action和state，你可以把这段代码编程这样:  
 ```js
 let action = addTodo('Use Redux')
