@@ -145,3 +145,61 @@ applyMiddlewareByMonkeypatching(store, [ logger, crashReport ])
 事实是我们把Monkeypatch隐藏在我们的库中，但是实际上没有改变使用Monkeypatch的事实
 
 ## 尝试#5: 移除Monkeypatch
+那我们为什么不直接重写`dispatch`呢？当然，是为了能够在中间件之后去调用，但是也有另外一个原因：这样每个中间件可以访问和调用前一个包装后的`store.dispatch`:  
+```js
+function logger(store) {
+    // Must point to the fucntion returned by the previous middleware:
+    let next = store.dispatch
+    return function dispatchAndLog(action) {
+        console.log('dispatching', action)
+        let result = next(action)
+        console.log('next state', store.getState())
+        return result
+    }
+}
+```  
+他的本质是链式中间件！
+
+如果``applyMiddlewareByMonkeypatching`在处理第一个中间件之后没有马上赋给`store.dispatch`，`store.dispatch`将继续指向原始的`dispatch`函数，然后第二个中间件也将被绑在原始的`dispatch`函数上(即不断把中间件赋给`store.dispatch`，利用闭包来访问前一次中间件)
+
+除此之外还有另一种不同的方式实现链式调用. 中间件可以接受`next()`dispatch函数作为参数代替原来的从`store`实例中读取dispatch函数的方法  
+```js
+function logger(store) {
+    return function wrapDispatchToAddLogging(next) {
+        return function dispatchAndLog(action) {
+            console.log('dispathing', action)
+            let result = next(action)
+            console.log('next state', store.getState())
+            return result
+        }
+    }
+}
+```  
+这是一个"we need to go deeper"的时刻，所以它可能多花一点时间去变得理解. 函数瀑布很吓人，ES6的箭头函数让currying看起来更简洁:  
+```js
+const logger = store => next => action => {
+    console.log('dispatching', action)
+    let result = next(action)
+    console.log('next state', store.getState())
+    return result
+}
+const crashReporter = store => next => action => {
+    try {
+        return next(action)
+    } catch (err) {
+        console.error('Caught an exception!', err)
+        Raven.captureException(err, {
+            extra: {
+                action,
+                state: store.getState()
+            }
+        })
+        throw err
+    }
+}
+```  
+这是Redux中间件的样子.  
+
+现在中间件接受`next()`dispatch函数，然后返回一个dispatch函数，它反过来作为`next()`到左边的中间件，等等. 访问一些store的方法，例如，`getState()`仍然很有用，因此store保留作为顶层参数
+
+## 尝试#6: "单纯"的使用中间件
