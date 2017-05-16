@@ -203,3 +203,34 @@ const crashReporter = store => next => action => {
 现在中间件接受`next()`dispatch函数，然后返回一个dispatch函数，它反过来作为`next()`到左边的中间件，等等. 访问一些store的方法，例如，`getState()`仍然很有用，因此store保留作为顶层参数
 
 ## 尝试#6: "单纯"的使用中间件
+我们可以写第一个最终的，完全包装`dispatch()`的`applyMiddleware()`来代替`applyMiddlewareByMonkeypatching()`，然后返回使用这个函数的store的副本：  
+
+```js
+// Warning: Naïve implementation!
+// That's *not* Redux API.
+function applyMiddleware(store, middlewares) {
+  middlewares = middlewares.slice()
+  middlewares.reverse()
+  let dispatch = store.dispatch
+  middlewares.forEach(middleware =>
+    dispatch = middleware(store)(dispatch)
+  )
+  return Object.assign({}, store, { dispatch })
+}
+```
+
+` applyMiddleware()`的实现已经和Redux中非常接近了，但是有三个重要的不同之处：  
+- 只暴露store的子集给middleware，`dispatch(action)`和`getState()`，实际在源码中只暴露这样一个对象：  
+
+        ```js
+        var middlewareAPI = {
+            getState: store.getState,
+            dispatch: (action) => dispatch(action)
+        }
+        ```
+- 在你使用middlware调用`store.dispatch(action)`代替`next(action)`的时候使用了一些小技巧，这个行为其实便利再一次遍历middlware chain，包括当前的middleware. 这对于异步的middleware是有用的
+- 为了确保你只调用middleware一次，它操作`createStore()`而不是`store`本身. 使用`(...middlewares) => (createStore) => createStore`代替`(store, middlewares) => store`
+
+因为在使用`createStore()`之前使用`applyMiddleware()`太繁琐的，所以`createStore()`接受一个可选的最后一个参数作为`applyMiddleware()`
+
+## 最后的实现
