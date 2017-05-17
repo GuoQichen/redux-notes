@@ -1,0 +1,1 @@
+export const RETRIVE_PRODUCTS = 'RETRIVE_PRODUCTS'
