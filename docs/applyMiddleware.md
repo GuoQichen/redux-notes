@@ -160,7 +160,7 @@ function logger(store) {
 ```  
 他的本质是链式中间件！
 
-如果``applyMiddlewareByMonkeypatching`在处理第一个中间件之后没有马上赋给`store.dispatch`，`store.dispatch`将继续指向原始的`dispatch`函数，然后第二个中间件也将被绑在原始的`dispatch`函数上(即不断把中间件赋给`store.dispatch`，利用闭包来访问前一次中间件)
+如果`applyMiddlewareByMonkeypatching`在处理第一个中间件之后没有马上赋给`store.dispatch`，`store.dispatch`将继续指向原始的`dispatch`函数，然后第二个中间件也将被绑在原始的`dispatch`函数上(即不断把中间件赋给`store.dispatch`，利用闭包来访问前一次中间件)
 
 除此之外还有另一种不同的方式实现链式调用. 中间件可以接受`next()`dispatch函数作为参数代替原来的从`store`实例中读取dispatch函数的方法  
 ```js
@@ -220,17 +220,57 @@ function applyMiddleware(store, middlewares) {
 ```
 
 ` applyMiddleware()`的实现已经和Redux中非常接近了，但是有三个重要的不同之处：  
-- 只暴露store的子集给middleware，`dispatch(action)`和`getState()`，实际在源码中只暴露这样一个对象：  
+- redux源码中只暴露store的子集给middleware，`dispatch(action)`和`getState()`，实际在源码中只暴露这样一个对象：  
 
-        ```js
-        var middlewareAPI = {
-            getState: store.getState,
-            dispatch: (action) => dispatch(action)
-        }
-        ```
+    ```js
+    var middlewareAPI = {
+        getState: store.getState,
+        dispatch: (action) => dispatch(action)
+    }
+    ```
 - 在你使用middlware调用`store.dispatch(action)`代替`next(action)`的时候使用了一些小技巧，这个行为其实便利再一次遍历middlware chain，包括当前的middleware. 这对于异步的middleware是有用的
 - 为了确保你只调用middleware一次，它操作`createStore()`而不是`store`本身. 使用`(...middlewares) => (createStore) => createStore`代替`(store, middlewares) => store`
 
 因为在使用`createStore()`之前使用`applyMiddleware()`太繁琐的，所以`createStore()`接受一个可选的最后一个参数作为`applyMiddleware()`
 
 ## 最后的实现
+基于我们刚写的中间件：
+```js
+const logger = store => next => action => {
+  console.log('dispatching', action)
+  let result = next(action)
+  console.log('next state', store.getState())
+  return result
+}
+const crashReporter = store => next => action => {
+  try {
+    return next(action)
+  } catch (err) {
+    console.error('Caught an exception!', err)
+    Raven.captureException(err, {
+      extra: {
+        action,
+        state: store.getState()
+      }
+    })
+    throw err
+  }
+}
+```
+这是如何在redux store中使用：
+```js
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+let todoApp = combineReducers(reducers)
+let store = createStore(
+  todoApp,
+  // applyMiddleware() tells createStore() how to handle middleware
+  applyMiddleware(logger, crashReporter)
+)
+```
+就是这样，现在所有dispatch到这个store实例的action都会通过`logger`和`crashReporter`：
+```js
+// Will flow through both logger and crashReporter middleware!
+store.dispatch(addTodo('Use Redux'))
+```
+
+## 七个例子
