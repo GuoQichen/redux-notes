@@ -8,10 +8,11 @@ import App from './container/App'
 import thunk from 'redux-thunk'
 import { receiveProducts } from './action'
 
+const middlewares = [ thunk, logger ]
 
-const store = createStore(reducer, applyMiddleware(logger))
+const store = createStore(reducer, applyMiddleware(...middlewares))
 
-receiveProducts(store.dispatch)
+store.dispatch(receiveProducts())
 
 ReactDOM.render((
     <Provider store={store}>
