@@ -38,3 +38,9 @@ export default function cartReducer(state = initState, action) {
             }
     }
 }
+
+
+// 业务逻辑中需要用到的help function
+export const getCartProduct = ({ cart, products }) => cart.productId.map(id => products.productById[id])
+export const getCartQuantity = ({ cart }, id) => cart.quantity[id]
+

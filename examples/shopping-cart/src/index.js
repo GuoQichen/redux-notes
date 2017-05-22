@@ -6,7 +6,7 @@ import logger from 'redux-logger'
 import reducer from './reducer'
 import App from './container/App'
 import thunk from 'redux-thunk'
-import { receiveProducts } from './action/product'
+import { receiveProducts } from './action'
 
 
 const store = createStore(reducer, applyMiddleware(logger))

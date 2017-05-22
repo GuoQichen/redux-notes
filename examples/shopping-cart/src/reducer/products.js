@@ -48,3 +48,8 @@ export default combineReducers({
     productById,
     visibleProduct
 })
+
+
+// help function
+export const getProduct = (products, id) => products.productById[id]
+export const getVisibleProducts = ({ products }) => products.visibleProduct.map(id => getProduct(products, id))

@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ProductList from '../component/ProductList'
-import { getVisibleProducts, addToCart } from '../action/product'
+import { addToCart } from '../action'
+import { getVisibleProducts } from '../reducer'
 
 function ProductListContainer({ products, addToCart }) {
     return (
