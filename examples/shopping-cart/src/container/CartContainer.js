@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Cart from '../component/Cart'
 import { checkout } from '../action'
-import { getCartProduct, getCartQuantity, getTotalMoney } from '../reducer'
+import { getCartProduct, getCartQuantity, getTotalMoney } from '../reducer/cart'
 
 function CartContainer({ products, total, checkout }) {
     return (

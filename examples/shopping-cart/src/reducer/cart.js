@@ -44,3 +44,11 @@ export default function cartReducer(state = initState, action) {
 export const getCartProduct = ({ cart, products }) => cart.productId.map(id => products.productById[id])
 export const getCartQuantity = ({ cart }, id) => cart.quantity[id]
 
+// composed help function
+export const getTotalMoney = (state) =>
+     getCartProduct(state).reduce((total, product) =>
+        total += product.price * getCartQuantity(state, product.id),
+        0
+    )
+    .toFixed(2)
+
