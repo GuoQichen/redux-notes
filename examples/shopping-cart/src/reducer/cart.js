@@ -9,7 +9,7 @@ const initState = {
 const productId = (state = initState.productId, action) => {
     switch (action.type) {
         case ADD_TO_CART:
-            return state.indexOf(action.payload) !== -1 ? state : [...state, action.payload]
+            return state.indexOf(action.productId) !== -1 ? state : [...state, action.productId]
         default:
             return state
     }
@@ -20,7 +20,7 @@ const quantity = (state = initState.quantity, action) => {
         case ADD_TO_CART:
             return {
                 ...state,
-                [action.payload]: state[action.payload] ? ++state[action.payload] : 1
+                [action.productId]: state[action.productId] ? ++state[action.productId] : 1
             }          
         default: 
             return state

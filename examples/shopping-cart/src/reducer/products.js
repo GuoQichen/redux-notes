@@ -18,17 +18,19 @@ const productById = (state = {}, action) => {
         case RETRIVE_PRODUCTS:
             return {
                 ...state,
-                ...action.payload.reduce((prevState, product) => {
+                ...action.products.reduce((prevState, product) => {
                     prevState[product.id] = product
                     return prevState
                 }, {})
             }   
-        case ADD_TO_CART:
-            return {
-                ...state,
-                [action.payload]: product(state[action.payload], action)
-            }
         default:
+            const { productId } = action
+            if(productId) {
+                return {
+                    ...state,
+                    [action.productId]: product(state[action.productId], action)
+                }
+            }
             return state
     }
 }
@@ -36,7 +38,7 @@ const productById = (state = {}, action) => {
 const visibleProduct = (state = [], action) => {
     switch (action.type) {
         case RETRIVE_PRODUCTS:
-            return action.payload.map(product => product.id)
+            return action.products.map(product => product.id)
         default:
             return state
     }

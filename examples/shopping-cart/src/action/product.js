@@ -5,14 +5,14 @@ export const receiveProducts = (dispatch) => {
     getProducts((products) => {
         dispatch({
             type: RETRIVE_PRODUCTS,
-            payload: products
+            products
         })
     }, 500)
 }
 
 export const addToCart = (id) => ({
     type: ADD_TO_CART,
-    payload: id
+    productId: id
 })
 
 export const getProduct = (state, id) => state.products.productById[id]
