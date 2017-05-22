@@ -1,8 +1,8 @@
 import React from 'react'
 import ProductItem from './ProductItem'
-import { shape, number, string, arrayOf } from 'prop-types'
+import { shape, number, string, arrayOf, func } from 'prop-types'
 
-export default function ProductList({ products }) {
+export default function ProductList({ products, addToCart }) {
     
     return (
         <div>
@@ -14,6 +14,7 @@ export default function ProductList({ products }) {
                         title={title}    
                         price={price}
                         inventory={inventory}
+                        addToCart={() => addToCart(id)}
                     />
                 ))
             }
@@ -27,5 +28,6 @@ ProductList.propTypes = {
         title: string.isRequired,
         price: number.isRequired,
         inventory: number.isRequired
-    }).isRequired)
+    }).isRequired),
+    addToCart: func.isRequired
 }
