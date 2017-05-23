@@ -8,7 +8,7 @@ const PostList = ({ fetch, posts }) => {
         <ul style={ fetch ? fetchStyle : {}}>
             {
                 posts.map(post => (
-                    <li>{post.title}</li>
+                    <li key={post.id}>{post.title}</li>
                 ))
             }
         </ul>

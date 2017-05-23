@@ -6,7 +6,7 @@ import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import App from './container/App';
 import registerServiceWorker from './registerServiceWorker';
-import reducer, { SELECT_SUBREDDIT } from './reducer'
+import reducer from './reducer'
 import { getPostBySubreddit } from './action'
 
 const middleware = [ thunk ]

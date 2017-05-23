@@ -1,9 +1,9 @@
 import { SUBREDDIT_REQUEST, SUBREDDIT_SUCCESS } from '../reducer'
 
 export const receivePost = ({ posts, subreddit }) => {
-    // console.log(posts)
     if(posts.kind !== 'Listing') throw new Error('posts isn\'t list')
     const result = posts.data.children.map(post => ({
+        id: post.data.id,
         title: post.data.title,
     }))
     return {
