@@ -21,11 +21,5 @@ ReactDOM.render((
 ), document.getElementById('root'));
 registerServiceWorker();
 
-// tempory test 
-store.dispatch({
-    type: SELECT_SUBREDDIT,
-    subreddit: 'nodejs'
-})
-
 // fetch
 getPostBySubreddit(store.getState().selectSubreddit, store.dispatch)
