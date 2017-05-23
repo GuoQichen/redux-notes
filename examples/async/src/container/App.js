@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-const App = () => {
+const App = ({ state }) => {
 	return (
 		<div>
 			<h1>Example Async</h1>
@@ -8,4 +9,7 @@ const App = () => {
 	);
 }
 
-export default App;
+const mapStateToProps = state => ({ state })
+export default connect(
+	mapStateToProps
+)(App);

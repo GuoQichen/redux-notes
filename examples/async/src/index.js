@@ -7,6 +7,7 @@ import logger from 'redux-logger'
 import App from './container/App';
 import registerServiceWorker from './registerServiceWorker';
 import reducer, { SELECT_SUBREDDIT } from './reducer'
+import { getPostBySubreddit } from './action'
 
 const middleware = [ thunk ]
 if (process.env.NODE_ENV === 'development') {
@@ -25,3 +26,6 @@ store.dispatch({
     type: SELECT_SUBREDDIT,
     subreddit: 'nodejs'
 })
+
+// fetch
+getPostBySubreddit(store.getState().selectSubreddit, store.dispatch)
