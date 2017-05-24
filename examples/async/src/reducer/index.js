@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 
 // constant
-export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
+export const CHANGE_SUBREDDIT = 'CHANGE_SUBREDDIT'
 export const SUBREDDIT_REQUEST = 'SUBREDDIT_REQUEST'
 export const SUBREDDIT_SUCCESS = 'SUBREDDIT_SUCCESS'
 export const SUBREDDIT_FAIL = 'SUBREDDIT_FAIL'
@@ -9,7 +9,7 @@ export const SUBREDDIT_FAIL = 'SUBREDDIT_FAIL'
 // reducer
 const selectSubreddit = (state = 'reactjs', action) => {
     switch (action.type) {
-        case SELECT_SUBREDDIT:
+        case CHANGE_SUBREDDIT:
             return action.subreddit
         default:
             return state
