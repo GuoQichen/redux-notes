@@ -25,8 +25,8 @@ export const getPosts = () =>  ({
     type: SUBREDDIT_REQUEST,
 })
 
-export const getPostBySubreddit = () => (dispatch, getState) => {
-    const subreddit = getState().selectSubreddit
+export const getPostBySubreddit = subreddit => (dispatch, getState) => {
+    subreddit = subreddit || getState().selectSubreddit
     dispatch(getPosts())
     return getSubredditAsync(subreddit).then(posts => {
         dispatch(receivePost({ posts, subreddit }))
