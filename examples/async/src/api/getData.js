@@ -4,7 +4,7 @@ const path = require('path')
 
 const target = ['reactjs', 'nodejs']
 const getUrl = subreddit => `https://www.reddit.com/r/${subreddit}.json`
-const apiPath = subreddit => path.resolve(process.cwd(), `./src/api/subreddit-${subreddit}.json`)
+const apiPath = subreddit => path.resolve(process.cwd(), `src/api/subreddit-${subreddit}.json`)
 
 const getDate = subreddit => {
     request

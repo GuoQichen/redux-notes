@@ -1,4 +1,11 @@
 import { SUBREDDIT_REQUEST, SUBREDDIT_SUCCESS, CHANGE_SUBREDDIT } from '../reducer'
+import getSubreddit from '../api'
+
+const getSubredditAsync = subreddit => Promise.resolve({ then(onFulfilled, onRejected) {
+    getSubreddit(subreddit)((data) => {
+        onFulfilled(data)
+    })
+}})
 
 export const receivePost = ({ posts, subreddit }) => {
     if(posts.kind !== 'Listing') throw new Error('posts isn\'t list')
@@ -19,17 +26,12 @@ export const getPosts = () =>  ({
 })
 
 export const getPostBySubreddit = () => (dispatch, getState) => {
-    const { subreddit } = getState().selectSubreddit
+    const subreddit = getState().selectSubreddit
     dispatch(getPosts())
-    return fetch(`https://www.reddit.com/r/${subreddit}.json`)
-        .then(response => 
-            response
-                .json()
-                .then(result => {
-                    dispatch(receivePost({ posts: result, subreddit }))
-                    return subreddit
-                })
-        )    
+    return getSubredditAsync(subreddit).then(posts => {
+        dispatch(receivePost({ posts, subreddit }))
+        return subreddit
+    })
 }
 
 const changeSubreddit = (subreddit) => ({
