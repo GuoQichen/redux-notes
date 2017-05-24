@@ -18,7 +18,8 @@ export const getPosts = () =>  ({
     type: SUBREDDIT_REQUEST,
 })
 
-export const getPostBySubreddit = subreddit => dispatch => {
+export const getPostBySubreddit = () => (dispatch, getState) => {
+    const { subreddit } = getState().selectSubreddit
     dispatch(getPosts())
     return fetch(`https://www.reddit.com/r/${subreddit}.json`)
         .then(response => 
