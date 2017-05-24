@@ -21,5 +21,4 @@ ReactDOM.render((
 ), document.getElementById('root'));
 registerServiceWorker();
 
-// fetch
-getPostBySubreddit(store.getState().selectSubreddit, store.dispatch)
+store.dispatch(getPostBySubreddit(store.getState().selectSubreddit))
