@@ -39,7 +39,9 @@ const changeSubreddit = (subreddit) => ({
     subreddit
 })
 
-export const refresh = subreddit => dispatch => {
+export const refresh = subreddit => (dispatch, getState) => {
+    const isFetch = getState().fetch
+    if(isFetch) return console.log('your refresh too often')
     dispatch(getPostBySubreddit(subreddit))
         .then(subreddit => {
             dispatch(changeSubreddit(subreddit))
@@ -51,7 +53,7 @@ export const selectSubreddit = subreddit => (dispatch, getState) => {
     if(subredditPost) {
         dispatch(changeSubreddit(subreddit))
     } else {
-        refresh(subreddit)(dispatch)
+        refresh(subreddit)(dispatch, getState)
     }
 }
 
