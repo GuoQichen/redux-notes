@@ -35,7 +35,7 @@ const postBySubreddit = (state = {}, action) => {
         case SUBREDDIT_SUCCESS:
             return {
                 ...state,
-                [action.subreddit]: post(state.subreddit, action)
+                [action.subreddit]: post(state[subreddit], action)
             }
         default:
             return state
