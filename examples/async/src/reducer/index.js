@@ -16,12 +16,26 @@ const selectSubreddit = (state = 'reactjs', action) => {
     }
 }
 
+const post = (state = {
+    posts: []
+}, action) => {
+    switch (action.type) {
+        case SUBREDDIT_SUCCESS:
+            return {
+                posts: action.posts,
+                receivedAt: action.receivedAt
+            }
+        default:
+            return state
+    }
+}
+
 const postBySubreddit = (state = {}, action) => {
     switch (action.type) {
         case SUBREDDIT_SUCCESS:
             return {
                 ...state,
-                [action.subreddit]: action.posts
+                [action.subreddit]: post(state, action)
             }
         default:
             return state

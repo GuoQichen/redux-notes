@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { selectSubreddit } from '../action'
+import { selectSubreddit, refresh } from '../action'
 import PostList from '../component/postList'
 import SelectSubreddit from '../component/selectSubreddit'
 
 const App = (props) => {
-	const { fetch, subreddit, selectSubreddit } = props
+	const { fetch, subreddit, dispatch, selectSubreddit, posts = [], lastUpdate, refresh } = props
 	return (
 		<div>
 			<h1>Example Async</h1>
@@ -15,18 +15,26 @@ const App = (props) => {
 			{
 				fetch && <h2>Lodding...Please wait a moment</h2>
 			}
-			<PostList {...props} />
+			<h3 style={{ display: 'flex'}}>
+				fetch data time is {lastUpdate ? lastUpdate.toLocaleTimeString() : ''}
+				<button onClick={() => refresh(subreddit)}>refresh</button>
+			</h3>
+			<PostList fetch={fetch} posts={posts} />
 		</div>
 	);
 }
 
-const mapStateToProps = state => ({ 
-	fetch: state.fetch,
-	subreddit: state.selectSubreddit,
-	posts: state.postBySubreddit[state.selectSubreddit] || []
- })
+const mapStateToProps = state => {
+	const subreddit = state.postBySubreddit[state.selectSubreddit]
+	return { 
+		fetch: state.fetch,
+		subreddit: state.selectSubreddit,
+		lastUpdate: subreddit && subreddit.receivedAt,
+		posts: subreddit && subreddit.posts
+	}
+}
 
 export default connect(
 	mapStateToProps,
-	{ selectSubreddit }
+	{ selectSubreddit, refresh }
 )(App);

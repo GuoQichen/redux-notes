@@ -12,11 +12,11 @@ export const receivePost = ({ posts, subreddit }) => {
     const result = posts.data.children.map(post => ({
         id: post.data.id,
         title: post.data.title,
-        receivedAt: new Date()
     }))
     return {
         type: SUBREDDIT_SUCCESS,
         posts: result,
+        receivedAt: new Date(),        
         subreddit
     }
 }
@@ -39,9 +39,19 @@ const changeSubreddit = (subreddit) => ({
     subreddit
 })
 
-export const selectSubreddit = subreddit => dispatch => {
+export const refresh = subreddit => dispatch => {
     dispatch(getPostBySubreddit(subreddit))
         .then(subreddit => {
             dispatch(changeSubreddit(subreddit))
         })
 }
+
+export const selectSubreddit = subreddit => (dispatch, getState) => {
+    const subredditPost = getState().postBySubreddit[subreddit]
+    if(subredditPost) {
+        dispatch(changeSubreddit(subreddit))
+    } else {
+        refresh(subreddit)(dispatch)
+    }
+}
+
