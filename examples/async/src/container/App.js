@@ -12,9 +12,18 @@ class App extends PureComponent {
 		dispatch(getPostIfNeed(subreddit))
 	}
 
+	componentWillReceiveProps(nextProps) {
+		const { subreddit:next } = nextProps
+		const { subreddit:current, dispatch } = this.props
+		if(next !== current) {
+			dispatch(getPostIfNeed(next))
+		}
+	}
+
 	handleRefresh = () => {
 		const { subreddit, dispatch } = this.props
 		dispatch(setInvalid(subreddit))
+		dispatch(getPostIfNeed(subreddit))
 	}
 
 	handleChange = (subreddit) => {

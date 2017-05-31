@@ -24,7 +24,7 @@ const post = (state = {
     switch (action.type) {
         case SUBREDDIT_SUCCESS:
             return {
-                ...state,
+                isInvalid: false,
                 posts: action.posts,
                 receivedAt: action.receivedAt
             }
