@@ -1,11 +1,12 @@
 import React from 'react'
+import { bool, array } from 'prop-types'
 
-const PostList = ({ fetch, posts }) => {
-    const fetchStyle =  {
+const PostList = ({ isFetch, posts }) => {
+    const fetchStyle =  isFetch ? {
         opacity: '0.5'
-    }
+    } : {}
     return (
-        <ul style={ fetch ? fetchStyle : {}}>
+        <ul style={fetchStyle}>
             {
                 posts.map(post => (
                     <li key={post.id}>{post.title}</li>
@@ -13,6 +14,11 @@ const PostList = ({ fetch, posts }) => {
             }
         </ul>
     )
+}
+
+PostList.propTypes = {
+    isFetch: bool.isRequired,
+    posts: array.isRequired
 }
 
 export default PostList

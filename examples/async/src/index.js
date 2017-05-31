@@ -19,8 +19,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 const store = createStore(reducer, applyMiddleware(...middleware))
 
-store.dispatch(getPostBySubreddit())
-
 ReactDOM.render((
     <Provider store={store}>
         <App />

@@ -1,4 +1,9 @@
-import { SUBREDDIT_REQUEST, SUBREDDIT_SUCCESS, CHANGE_SUBREDDIT } from '../reducer'
+import { 
+    SUBREDDIT_REQUEST, 
+    SUBREDDIT_SUCCESS, 
+    CHANGE_SUBREDDIT, 
+    SUBREDDIT_INVALID
+} from '../reducer'
 import getSubreddit from '../api'
 
 // 基本的actionCreator
@@ -6,8 +11,13 @@ const getPosts = () =>  ({
     type: SUBREDDIT_REQUEST,
 })
 
-const changeSubreddit = (subreddit) => ({
+export const changeSubreddit = (subreddit) => ({
     type: CHANGE_SUBREDDIT,
+    subreddit
+})
+
+export const setInvalid = (subreddit) => ({
+    type: SUBREDDIT_INVALID,
     subreddit
 })
 
@@ -20,7 +30,6 @@ const getSubredditAsync = subreddit => Promise.resolve({ then(onFulfilled, onRej
 
 // 异步获取数据成功后的actionCreator, 在这里对收到的数据进行处理，然后经过reducer合并进state tree
 export const receivePost = ({ posts, subreddit }) => {
-    if(posts.kind !== 'Listing') throw new Error('posts isn\'t list')
     const result = posts.data.children.map(post => ({
         id: post.data.id,
         title: post.data.title,
@@ -33,33 +42,28 @@ export const receivePost = ({ posts, subreddit }) => {
     }
 }
 
+const isNeedFetch = state => {
+    const { selectedSubreddit, postBySubreddit, isFetch } = state
+    const posts = postBySubreddit[selectedSubreddit]
+    const isInvalid = posts && posts.isInvalid
+    if(!posts) return true
+    if(isFetch) return false
+    return isInvalid
+}
+
 // 异步的action，封装了异步获取数据的过程，从request到获取成功后数据的处理，返回promise方便async flow
-export const getPostBySubreddit = subreddit => (dispatch, getState) => {
-    subreddit = subreddit || getState().selectSubreddit
+export const getPostBySubreddit = (subreddit) => (dispatch, getState) => {
     dispatch(getPosts())
-    return getSubredditAsync(subreddit).then(posts => {
-        dispatch(receivePost({ posts, subreddit }))
-        return subreddit
-    })
+    return getSubredditAsync(subreddit)
+            .then(posts => {
+                dispatch(receivePost({ posts, subreddit }))
+                return subreddit
+            })
 }
 
-// 比getPostBySubreddit更高级的api，包括对获取频率的限制，获取后的一些状态的改变
-export const refresh = subreddit => (dispatch, getState) => {
-    const isFetch = getState().fetch
-    if(isFetch) return console.error('your refresh too often')
+export const getPostIfNeed = (subreddit) => (dispatch, getState) => {
+    const state = getState()
+    if(!isNeedFetch(state)) return
     dispatch(getPostBySubreddit(subreddit))
-        .then(subreddit => {
-            dispatch(changeSubreddit(subreddit))
-        })
-}
-
-// 改变subreddit后，在这边选择是重新获取还是使用缓存
-export const selectSubreddit = subreddit => (dispatch, getState) => {
-    const subredditPost = getState().postBySubreddit[subreddit]
-    if(subredditPost) {
-        dispatch(changeSubreddit(subreddit))
-    } else {
-        refresh(subreddit)(dispatch, getState)
-    }
 }
 

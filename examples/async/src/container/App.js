@@ -1,40 +1,56 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
-import { selectSubreddit, refresh } from '../action'
-import PostList from '../component/postList'
-import SelectSubreddit from '../component/selectSubreddit'
+import { changeSubreddit, setInvalid, getPostIfNeed } from '../action'
+import PostList from '../component/PostList'
+import Picker from '../component/Picker'
 
-const App = (props) => {
-	const { fetch, subreddit, dispatch, selectSubreddit, posts = [], lastUpdate, refresh } = props
-	return (
-		<div>
-			<h1>Example Async</h1>
-			<h2>{subreddit}</h2>
-			<SelectSubreddit selectSubreddit={selectSubreddit}/>
-			{
-				fetch && <h2>Lodding...Please wait a moment</h2>
-			}
-			<h3 style={{ display: 'flex'}}>
-				fetch data time is {lastUpdate ? lastUpdate.toLocaleTimeString() : ''}
-				<button onClick={() => refresh(subreddit)}>refresh</button>
-			</h3>
-			<PostList fetch={fetch} posts={posts} />
-		</div>
-	);
+class App extends PureComponent {
+
+	componentDidMount() {
+		const { subreddit, dispatch } = this.props		
+		dispatch(getPostIfNeed(subreddit))
+	}
+
+	handleRefresh = () => {
+		const { subreddit, dispatch } = this.props
+		dispatch(setInvalid(subreddit))
+	}
+
+	handleChange = (subreddit) => {
+		const { dispatch } = this.props
+		dispatch(changeSubreddit(subreddit))
+	}
+
+	render() {
+		const { isFetch, subreddit, posts = [], lastUpdate } = this.props		
+		return (
+			<div>
+				<h1>Example Async</h1>
+				<h2>{subreddit}</h2>
+				<Picker 
+					onChange={this.handleChange}
+					options={['reactjs', 'nodejs']}
+				/>
+				{isFetch && <h2>Lodding...Please wait a moment</h2>}
+				<h3 style={{ display: 'flex'}}>
+					fetch data time is {lastUpdate ? lastUpdate.toLocaleTimeString() : ''}
+					<button onClick={this.handleRefresh}>refresh</button>
+				</h3>
+				<PostList isFetch={isFetch} posts={posts} />
+			</div>
+		);
+	}
 }
 
 const mapStateToProps = state => {
-	const subreddit = state.postBySubreddit[state.selectSubreddit]
+	const subreddit = state.postBySubreddit[state.selectedSubreddit]
 	return { 
-		fetch: state.fetch,
-		subreddit: state.selectSubreddit,
+		isFetch: state.isFetch,
+		subreddit: state.selectedSubreddit,
 		lastUpdate: subreddit && subreddit.receivedAt,
 		posts: subreddit && subreddit.posts
 	}
 }
 
-export default connect(
-	mapStateToProps,
-	{ selectSubreddit, refresh }
-)(App);
+export default connect(mapStateToProps)(App);
