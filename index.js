@@ -17,7 +17,7 @@ const logState = () => {
 }
 
 store.subscribe(() => {
-    // logState()
+    logState()
 })
 
 store.dispatch({ type: 'TEST_ACTION'}) // dispatch would return action 
