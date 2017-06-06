@@ -43,10 +43,10 @@ yarn start
 
 	```js
 	const fetchPosts = reddit => dispatch => {
-	dispatch(requestPosts(reddit))
-	return fetch(`https://www.reddit.com/r/${reddit}.json`)
-		.then(response => response.json())
-		.then(json => dispatch(receivePosts(reddit, json)))
+		dispatch(requestPosts(reddit))
+		return fetch(`https://www.reddit.com/r/${reddit}.json`)
+			.then(response => response.json())
+			.then(json => dispatch(receivePosts(reddit, json)))
 	}	
 	```
 	这个方法就是单纯的获取数据，不参杂业务逻辑，`/src/action/index.js`文件中的action的主要内容就是这些，剩下的就是简单的action creator
@@ -83,7 +83,7 @@ yarn start
 	
 	第二个参数可以是一个函数，也可以是一个对象，甚至可以为空，当作为函数的时候和第一个参数的时候方法一样，接收dispatch作为参数，然后返回props，作为对象的时候，就会调用redux的bindActionCreator方法，如果为空就会把dispatch作为props传递进UI组件
 
-	然后在state到prop的映射中，返回的post永远是`postsByReddit[selectedReddit]`, 也就是根据选择好的reddit来选择对应posts，所以业务逻辑与用户的交互中只需要修改`selectedReddit`，修改后组件触发`componentWillReceiveProps`，然后触发`fetchPostsIfNeeded`，然后去判断是否需要获取post
+	然后在state到prop的映射中，返回的post永远是`postsByReddit[selectedReddit]`, 也就是根据选择好的reddit来选择对应posts，所以业务逻辑与用户的交互中只需要修改`selectedReddit`，修改后组件触发`componentWillReceiveProps`，然后触发`fetchPostsIfNeeded`，然后去判断是否需要获取post，如果不需要，就可以直接从缓存中的post中拿到对应reddit的post
 
 	```js
 	handleChange = nextReddit => {
@@ -106,4 +106,4 @@ yarn start
 
 3. 总结
 
-	整体的业务逻辑非常清晰，灵活利用组件的life cycle和container组件来实现业务逻辑也值得多多练习
+	整体的业务逻辑非常清晰，灵活利用组件的life cycle和container组件来实现业务逻辑也值得多多练习，在实际的业务场景中，例如分类商品的展示，也可以这样设计，显示的商品就是`product[selecttedCategory]`，然后在组件的lify cycle中的`componentWillReceivePorps`中，当`category`改变，且`category`对应的product是没有的，才去向服务器获取product，否则使用缓存的product
