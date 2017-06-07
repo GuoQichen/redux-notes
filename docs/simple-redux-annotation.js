@@ -138,10 +138,16 @@ export function createStore(reducer, initialState) {
   var listeners = [];
   var isDispatching = false;
 
+  /**
+   * 返回当前state
+   */
   function getState() {
     return currentState;
   }
 
+  /**
+   * 很棒的思想，订阅dispatch action的时候会调用的listener，返回一个可以取消订阅的函数
+   */
   function subscribe(listener) {
     listeners.push(listener);
 
@@ -158,15 +164,25 @@ export function createStore(reducer, initialState) {
 
     try {
       isDispatching = true;
+      /**
+       * 核心逻辑
+       * dispatch做的事情其实很简单，以dispatch的action调用一下reducer，然后返回一个新的状态
+       */
       currentState = currentReducer(currentState, action);
     } finally {
       isDispatching = false;
     }
 
+    /**
+     * 创建listeners数组的拷贝，然后调用注册的监听函数
+     */
     listeners.slice().forEach(listener => listener());
     return action;
   }
 
+  /**
+   * 替换当前的reducer，然后dispatch初始化actioin
+   */
   function replaceReducer(nextReducer) {
     currentReducer = nextReducer;
     dispatch({ type: '@@redux/INIT' });
