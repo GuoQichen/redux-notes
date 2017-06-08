@@ -33,7 +33,8 @@ const chain = mws.map(middleware => middleware({ dispatch, getState }))
 compose(...chain)(store.dispatch)
 ```
 
-第二步就是把注入好api的middleware使用compose结合起来
+第二步就是把注入好api的middleware使用compose结合起来，注意这边反着写是因为compose是从后往前
+
 ```js
 const chain_3 = (next = store.dispatch) => action => {
 	console.log('trigger middleware 3')
