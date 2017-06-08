@@ -9,6 +9,7 @@ const actionCreator = require('./action')
 
 // test middleware
 const logger = ({ dispatch, getState }) => next => action => {
+    console.log('trigger logger')
     console.log('prevState: ', getState())
     console.log('action: ', action)
     // invoke original dispatch, but will cause infinite loop
@@ -18,8 +19,14 @@ const logger = ({ dispatch, getState }) => next => action => {
     return result // this result will be store.dispatch() result, default return action 
 }
 
+const anotherMiddleware = dispatch => next => action => {
+    console.log('trigger anothermiddleware')
+    return next(action)
+}
 
-const store = createStore(reducer, applyMiddleware(logger))
+const middlewares = [logger, anotherMiddleware]
+
+const store = createStore(reducer, applyMiddleware(...middlewares))
 
 const action = bindActionCreators(actionCreator, store.dispatch)
 
