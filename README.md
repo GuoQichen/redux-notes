@@ -59,9 +59,33 @@ this is notes of learn redux
         }
     })
     ```
+    内部实现的关键逻辑在于：
+
+    ```js
+    const dispatch = (action) => {
+        currentState = rootReducer(currentState, action)
+    }
+    ```
+    所做的事情只是以当前的state和dispatch的action为参数调用一次reducer
+
 - subscribe
 
     添加一个listener，当dispath一个action的时候会调用，不会传递参数进去
+
+    内部的实现在于存在内部维护的监听器数组，当subscibe的时候，把监听函数push到数组中，dispatch的时候遍历调用数组的每一个监听函数就可以
+
+    ```js
+    const listeners = []
+    const subscribe = (listener) => {
+        // 核心逻辑
+        listeners.push(listener)
+        // 返回一个可以取消订阅的函数
+        return function unSubscribe() {
+            const index = listeners.indexOf(listener)
+            listeners.splice(index, 1)
+        }
+    }
+    ```
 
 - getState
 
@@ -70,6 +94,22 @@ this is notes of learn redux
 - replaceReducer
 
     替换当前的reducer为另一个reducer
+
+    内部实现是把createStore时传递进去的reducer保存在一个currentReducer变量中，当调用replaceReducer的时候替换这个变量的值
+
+    ```js
+    const createStore = (reducer, preloadState, enhance) => {
+        const currentReducer = reducer
+        //...
+        const replaceReducer = (reducer) => {
+            currentReducer = reducer
+            // ... dosomething init
+        }
+        return {
+            replaceReducer,
+        }
+    }
+    ```
 
 ## bindActionCreators
 
