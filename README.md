@@ -139,13 +139,11 @@ function bindActionCreator(actionCreator, dispatch) {
     
 ## compose
 
-1. compose的实现，但是两种方法顺序是相反的，如果使用redux中的顺序，看起来直观，但是写起来不符合书写习惯
+1. compose的实现
 
 ```js
 // (a, b, c) => a(b(c()))
 const compose = (...funcs) => (...arg) => funcs.length ? funcs.reduceRight((compose, f) => f(compose), funcs.pop()(...arg)) : arg
-// (a, b, c) => c(b(a()))
-const compose = (...funcs) => (...arg) => funcs.length ? funcs.reduce((compose, f) => f(compose), funcs.shift()(...arg)) : arg
 ```
 
 ## applyMiddleware
