@@ -7,7 +7,7 @@ export default class Detail extends Component {
         }
         return (
             <div style={containerStyle}>
-                list
+
             </div>
         )
     }
