@@ -14,10 +14,9 @@ class App extends Component {
 				<hr/>
 				{
 					isFetch
-					? <User user={user}/>
-					: this.isEmpty(user)
-					? <h3>Empty</h3>
-					: <h3>Loading...</h3>
+					? <h3>Loading...</h3>
+					: this.isEmpty(user) ? <h3>Empty</h3>
+					: <User user={user}/>
 				}
 				<hr />
 				<List />
