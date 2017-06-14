@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 
-export default class Detail extends Component {
+export default class List extends Component {
     render() {
+        const { repos } = this.props
         const containerStyle = {
             margin: '20px 0'
         }

@@ -5,33 +5,35 @@ import Explore from './Explore'
 import List from '../component/List'
 import User from '../component/User'
 
+import { isEmpty } from '../action'
+
 class App extends Component {
 	render() {
-		const { user, isFetch } = this.props
+		const { user, repos } = this.props
+		const isFetchUser = user.isFetch
+		const userData = user.data
+		const isFetchRepo = repos.isFetch
+		const reposData = repos.data
 		return (
 			<div className="App">
 				<Explore />
 				<hr/>
 				{
-					isFetch
+					isFetchUser
 					? <h3>Loading...</h3>
-					: this.isEmpty(user) ? <h3>Empty</h3>
-					: <User user={user}/>
+					: isEmpty(userData) ? <h3>User is Empty</h3> : <User user={userData}/>
 				}
 				<hr />
-				<List />
+				{
+					isFetchRepo
+					? <h3>Loading...</h3>
+					: isEmpty(reposData) ? <h3>Repos is Empty</h3> : <List repos={reposData}/>
+				}
 			</div>
 		);
-	}
-
-	isEmpty = (obj) => {
-		return Object.keys(obj).length === 0
 	}
 }
 
 export default connect(
-	(state) => ({
-		user: state.user.data,
-		isFetch: state.user.isFetch
-	})
+	(state) => state
 )(App);

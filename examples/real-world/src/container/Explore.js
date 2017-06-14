@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-
 import { connect } from 'react-redux'
 
-import { USER_REQUEST, USER_SUCCESS, USER_FAILURE } from '../reducer'
+import { fetchUser, fetchRepos } from '../action'
 
 class Explore extends Component {
     state = {
@@ -17,7 +16,7 @@ class Explore extends Component {
         }
         return (
             <div>
-                Type a username or repo full name and hit 'Go':
+                Type a username and hit 'Go':
                 <main>
                     <input
                         type="text" 
@@ -34,15 +33,8 @@ class Explore extends Component {
     search = () => {
         const { searchValue } = this.state
         const { dispatch } = this.props
-        dispatch({ type: USER_REQUEST })
-        fetch(`https://api.github.com/users/${searchValue}`)
-            .then(result => result.json().then(data => dispatch({ 
-                type: USER_SUCCESS,
-                user: data
-            })))
-            .catch(err => dispatch({
-                type: USER_FAILURE
-            }))
+        dispatch(fetchUser(searchValue))
+            .then(() => dispatch(fetchRepos()))
     }
 }
 
