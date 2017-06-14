@@ -8,7 +8,16 @@ export default class List extends Component {
         }
         return (
             <div style={containerStyle}>
-
+                {
+                    repos.map(repo => (
+                        <div key={repo.name}>
+                            <h4>
+                                <a href={repo.html_url}>{repo.name}</a>
+                            </h4>
+                            <p>{repo.description || `no description`}</p>
+                        </div>
+                    ))
+                }
             </div>
         )
     }
