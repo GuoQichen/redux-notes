@@ -188,6 +188,9 @@ export function createStore(reducer, initialState) {
     dispatch({ type: '@@redux/INIT' });
   }
 
+  /**
+   * 一开始dispatch一个action是为了调用一次reducer，然后初始化state tree
+   */
   dispatch({ type: '@@redux/INIT' });
 
   return { dispatch, subscribe, getState, replaceReducer };
