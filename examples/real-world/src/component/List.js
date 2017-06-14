@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 
 export default class List extends Component {
     render() {
-        const { repos } = this.props
+        const { repos, isFetch } = this.props
         const containerStyle = {
-            margin: '20px 0'
+            margin: '20px 0',
+            opacity: isFetch ? 0.4 : 1,
         }
         return (
             <div style={containerStyle}>

@@ -27,7 +27,7 @@ class App extends Component {
 				{
 					isFetchRepo
 					? <h3>Loading...</h3>
-					: isEmpty(reposData) ? <h3>Repos is Empty</h3> : <List repos={reposData}/>
+					: isEmpty(reposData) ? <h3>Repos is Empty</h3> : <List repos={reposData} isFetch={isFetchUser}/>
 				}
 			</div>
 		);
