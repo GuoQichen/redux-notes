@@ -35,6 +35,7 @@ export const fetchUser = (userName) => (dispatch, getState) =>  {
 export const fetchReposAccordingUser = () => (dispatch, getState) => {
     const { repos_url } = getState().user.data
     if (!repos_url) return
+    dispatch(changeType('user'))        
     dispatch({ type: REPOS_REQUEST })
     return fetch(repos_url)
         .then(result => 
