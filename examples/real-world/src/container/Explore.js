@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { fetchUser, fetchRepos } from '../action'
+import {
+    fetchUser, fetchReposAccordingUser, fetchRepoAccordingSearch
+} from '../action'
 
 class Explore extends Component {
     state = {
@@ -23,6 +25,7 @@ class Explore extends Component {
                         style={inputStyle}
                         value={searchValue}
                         onChange={e => this.setState({ searchValue: e.target.value })}
+                        onKeyUp={this.hanldEnter}
                     />
                     <button onClick={this.search}>Go!</button>
                 </main>
@@ -33,8 +36,24 @@ class Explore extends Component {
     search = () => {
         const { searchValue } = this.state
         const { dispatch } = this.props
-        dispatch(fetchUser(searchValue))
-            .then(() => dispatch(fetchRepos()))
+        if (this.isSearchRepo()) {
+            dispatch(fetchRepoAccordingSearch(searchValue))
+        } else {
+            dispatch(fetchUser(searchValue))
+                .then(() => dispatch(fetchReposAccordingUser()))
+        }
+    }
+
+    hanldEnter = (e) => {
+        if (e.keyCode === 13) {
+            this.search()
+        }
+    }
+
+    isSearchRepo = () => {
+        const { searchValue } = this.state
+        if (searchValue.match(/\w+\/\w+/)) return true
+        return false
     }
 }
 

@@ -9,11 +9,13 @@ import { isEmpty } from '../action'
 
 class App extends Component {
 	render() {
-		const { user, repos } = this.props
+		const { user, repos, repo, searchType } = this.props
 		const isFetchUser = user.isFetch
 		const userData = user.data
-		const isFetchRepo = repos.isFetch
+		const isFetchRepos = repos.isFetch
 		const reposData = repos.data
+		const isFetchRepo = repo.isFetch
+		const repoData = repo.data
 		return (
 			<div className="App">
 				<Explore />
@@ -25,9 +27,11 @@ class App extends Component {
 				}
 				<hr />
 				{
-					isFetchRepo
+					isFetchRepos || isFetchRepo
 					? <h3>Loading...</h3>
-					: isEmpty(reposData) ? <h3>Repos is Empty</h3> : <List repos={reposData} isFetch={isFetchUser}/>
+					: isEmpty(searchType === 'user' ? reposData : repoData) 
+						? <h3>Repos is Empty</h3> 
+						: <List repos={searchType === 'user' ? reposData : [repoData]} isFetch={searchType === 'user' ? isFetchUser : isFetchRepo}/>
 				}
 			</div>
 		);
