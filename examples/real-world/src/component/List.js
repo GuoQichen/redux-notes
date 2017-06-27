@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 export default class List extends Component {
     render() {
-        const { repos, isFetch } = this.props
+        const { repos, isFetch, children } = this.props
         const containerStyle = {
             margin: '20px 0',
             opacity: isFetch ? 0.4 : 1,
@@ -19,6 +19,11 @@ export default class List extends Component {
                         </div>
                     ))
                 }
+                <div className="list-footer">
+                    {
+                        children
+                    }
+                </div>
             </div>
         )
     }

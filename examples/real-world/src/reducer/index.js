@@ -43,6 +43,7 @@ const user = (state = {
 const repos = (state = {
     isFetch: false,
     data: [],
+    pageIndex: 1,
 }, action) => {
     switch (action.type) {
         case REPOS_REQUEST:
@@ -53,12 +54,18 @@ const repos = (state = {
         case REPOS_SUCCESS:
             return {
                 isFetch: false,
-                data: [...action.repos]
+                data: [...action.repos],
+                pageIndex: ++state.pageIndex
             }
         case REPOS_FAILURE:
             return {
                 ...state,
                 isFetch: false,
+            }
+        case USER_SUCCESS:
+            return {
+                ...state,
+                pageIndex: 1,
             }
         default:
             return state

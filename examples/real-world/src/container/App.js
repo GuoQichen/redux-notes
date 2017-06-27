@@ -5,7 +5,7 @@ import Explore from './Explore'
 import List from '../component/List'
 import User from '../component/User'
 
-import { isEmpty } from '../action'
+import { isEmpty, fetchReposAccordingUser } from '../action'
 
 class App extends Component {
 	render() {
@@ -31,10 +31,20 @@ class App extends Component {
 					? <h3>Loading...</h3>
 					: isEmpty(searchType === 'user' ? reposData : repoData) 
 						? <h3>Repos is Empty</h3> 
-						: <List repos={searchType === 'user' ? reposData : [repoData]} isFetch={searchType === 'user' ? isFetchUser : isFetchRepo}/>
+						: (
+							<List repos={searchType === 'user' ? reposData : [repoData]} isFetch={searchType === 'user' ? isFetchUser : isFetchRepo}>
+								<button className="load-more" onClick={this.loadMore}>LOADING</button>
+							</List>
+						)
+							
 				}
 			</div>
 		);
+	}
+
+	loadMore = () => {
+		const { dispatch } = this.props
+		dispatch(fetchReposAccordingUser())
 	}
 }
 

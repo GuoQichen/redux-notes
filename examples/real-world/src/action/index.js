@@ -33,11 +33,14 @@ export const fetchUser = (userName) => (dispatch, getState) =>  {
 }
 
 export const fetchReposAccordingUser = () => (dispatch, getState) => {
-    const { repos_url } = getState().user.data
+    const currentState = getState()
+    const { repos_url } = currentState.user.data
+    const { pageIndex } = currentState.repos
+    const PER_PAGE = 5
     if (!repos_url) return
     dispatch(changeType('user'))        
     dispatch({ type: REPOS_REQUEST })
-    return fetch(repos_url)
+    return fetch(`${repos_url}?page=${pageIndex}&&per_page=${PER_PAGE}`)
         .then(result => 
             result.json().then(data =>
                 dispatch({
@@ -52,7 +55,7 @@ export const fetchReposAccordingUser = () => (dispatch, getState) => {
 }
 
 export const fetchRepoAccordingSearch = (searchValue) => (dispatch, getState) => {
-    dispatch(changeType('repo'))    
+    dispatch(changeType('repo'))
     dispatch({ type: REPO_REQUEST })
     return fetch(`https://api.github.com/repos/${searchValue}`)
         .then(result =>
