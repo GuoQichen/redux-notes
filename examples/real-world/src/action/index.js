@@ -17,20 +17,28 @@ export const changeType = (type) => (dispatch, getState) => {
     })
 }
 
-export const fetchUser = (userName) => (dispatch, getState) =>  {
-    dispatch({ type: USER_REQUEST })
-    return fetch(`https://api.github.com/users/${userName}`)
-        .then(result => 
-            result.json().then(data => 
-                dispatch({ 
-                    type: USER_SUCCESS,
-                    user: data
-                }), err => 
-                dispatch({
-                    type: USER_FAILURE
-                }))
-        )
+// export const fetchUser = (userName) => (dispatch, getState) =>  {
+//     dispatch({ type: USER_REQUEST })
+//     return fetch(`https://api.github.com/users/${userName}`)
+//         .then(result => 
+//             result.json().then(data => 
+//                 dispatch({ 
+//                     type: USER_SUCCESS,
+//                     user: data
+//                 }), err => 
+//                 dispatch({
+//                     type: USER_FAILURE
+//                 }))
+//         )
+// }
+
+export const fetchUser = (userName) => (dispatch, getState) => {
+    return dispatch({
+        types: [USER_REQUEST, USER_SUCCESS, USER_FAILURE],
+        callApi: () => fetch(`https://api.github.com/users/${userName}`),
+    })
 }
+
 
 export const fetchReposAccordingUser = () => (dispatch, getState) => {
     const currentState = getState()

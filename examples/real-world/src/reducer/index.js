@@ -27,7 +27,7 @@ const user = (state = {
             }
         case USER_SUCCESS:
             return {
-                data: action.user,
+                data: action.response,
                 isFetch: false
             }
         case USER_FAILURE:

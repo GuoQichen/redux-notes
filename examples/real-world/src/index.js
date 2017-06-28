@@ -8,9 +8,10 @@ import logger from 'redux-logger'
 import thunk from 'redux-thunk'
 import rootReducer from './reducer'
 
+import callApiMiddleware from './middleware'
 import App from './container/App';
 
-const middlewares = [thunk]
+const middlewares = [thunk, callApiMiddleware]
 
 if(process.env.NODE_ENV === 'development') {
 	middlewares.push(logger)
