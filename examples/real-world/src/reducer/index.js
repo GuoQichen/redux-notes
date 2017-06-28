@@ -54,7 +54,7 @@ const repos = (state = {
         case REPOS_SUCCESS:
             return {
                 isFetch: false,
-                data: [...action.repos],
+                data: [...action.response],
                 pageIndex: ++state.pageIndex
             }
         case REPOS_FAILURE:
@@ -84,7 +84,7 @@ const repo = (state = {
             }
         case REPO_SUCCESS:
             return {
-                data: action.repo,
+                data: action.response,
                 isFetch: false,
             }
         case REPO_FAILURE:
