@@ -104,6 +104,11 @@ export function applyMiddleware(...middlewares) {
      */
     chain = middlewares.map(middleware => middleware({
       getState: store.getState,
+      /**
+       * 这里之所以不直接dispatch: dispatch，而是构造一个函数是因为，
+       * 如果直接dispatch: dispatch，那么这个dispatch就会指向store.dispatch，之后无论对dispatch怎么patch，dispatch都是指向没有patch的store.dispatch，
+       * 但是新构造一个函数，函数中的dispatch是直接调用，那么表示的就是patch过后的dispatch，而不是原始的dispatch
+       */
       dispatch: (action) => dispatch(action)
     }));
     dispatch = compose(...chain)(store.dispatch);
