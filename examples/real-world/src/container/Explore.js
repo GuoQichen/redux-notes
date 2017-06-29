@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component, PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import {
     fetchUser, fetchReposAccordingUser, fetchRepoAccordingSearch
 } from '../action'
 
-class Explore extends Component {
+class Explore extends PureComponent {
     state = {
         searchValue: ''
     }
@@ -57,6 +57,4 @@ class Explore extends Component {
     }
 }
 
-export default connect(
-    (state) => state
-)(Explore)
+export default connect()(Explore)

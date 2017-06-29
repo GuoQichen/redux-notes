@@ -36,7 +36,6 @@ class App extends Component {
 								<button className="load-more" onClick={this.loadMore}>LOADING</button>
 							</List>
 						)
-							
 				}
 			</div>
 		);
