@@ -26,22 +26,22 @@ const callApiMiddleware = ({ dispatch, getState }) => next => action => {
         type: request,
         ...payload,
     })
-    return callApi().then(response => 
-        response.json().then(result => 
-            dispatch({
-                type: success,
-                response: result,
-                ...payload,
-            })
-        )
-    ).catch(error => 
-        dispatch({
-            type: failure,
-            error,
-            ...payload
-        })
-    )
-
+    return callApi()
+            .then(response => response.json())
+            .then(result => 
+                dispatch({
+                    type: success,
+                    response: result,
+                    ...payload,
+                })
+            )
+            .catch(error => 
+                dispatch({
+                    type: failure,
+                    error,
+                    ...payload
+                })
+            )
 }
 
 export default callApiMiddleware
