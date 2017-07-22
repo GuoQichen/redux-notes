@@ -145,7 +145,7 @@ applyMiddlewareByMonkeypatching(store, [ logger, crashReport ])
 事实是我们把Monkeypatch隐藏在我们的库中，但是实际上没有改变使用Monkeypatch的事实
 
 ## 尝试#5: 移除Monkeypatch
-那我们为什么不直接重写`dispatch`呢？当然，是为了能够在中间件之后去调用，但是也有另外一个原因：这样每个中间件可以访问和调用前一个包装后的`store.dispatch`:  
+~~那我们为什么不直接重写`dispatch`呢?~~ 为什么我们要替换掉原来的`dispatch`? 当然，是为了能够在中间件之后去调用，但是也有另外一个原因：这样每个中间件可以访问和调用前一个包装后的`store.dispatch`:  
 ```js
 function logger(store) {
     // Must point to the fucntion returned by the previous middleware:
@@ -158,9 +158,22 @@ function logger(store) {
     }
 }
 ```  
-他的本质是链式中间件！
+~~他的本质是链式中间件!~~ 使用链式中间件是必要的
 
 如果`applyMiddlewareByMonkeypatching`在处理第一个中间件之后没有马上赋给`store.dispatch`，`store.dispatch`将继续指向原始的`dispatch`函数，然后第二个中间件也将被绑在原始的`dispatch`函数上(即不断把中间件赋给`store.dispatch`，利用闭包来访问前一次中间件)
+
+(上面这样写中间件的弊端：
+因为你无法控制开发者编写中间件的过程，如果开发者忘记写
+
+```js
+let next = store.disaptch
+```
+而是直接使用store上的dispatch
+
+```js
+store.dispatch(action)
+```
+那么就无法使用链式中间件，例如有两个中间件`[logger, crashReporter]`，如果logger中没有使用`let next = store.dispatch`，那么在第二个中间件中的`store.dispatch`访问到的就是原始的`store.dispatch`，最后输出的`store.dispatch`其实只是指向最后一个中间件，所以为了避免bug，控制权不能在开发者的手中)
 
 除此之外还有另一种不同的方式实现链式调用. 中间件可以接受`next()`dispatch函数作为参数代替原来的从`store`实例中读取dispatch函数的方法  
 ```js

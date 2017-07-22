@@ -84,6 +84,7 @@ this is notes of learn redux
             const index = listeners.indexOf(listener)
             listeners.splice(index, 1)
         }
+        // 之所以可行是因为indexOf里面使用的strict equality，函数所表示的内存地址是一致的
     }
     ```
 
@@ -185,7 +186,7 @@ creatorStore(finalreducer, { userList: [], productList: []})
 
 ```js
 const combineReducers = (reducers) => (state, action) => Object.keys(reducers).reduce((prevState, key) => {
-    prevState[key] = reducers[key](state, action)
+    prevState[key] = reducers[key](state[key], action)
     return prevState
 }, {})
 // tese-case
