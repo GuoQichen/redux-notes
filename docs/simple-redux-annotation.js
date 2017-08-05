@@ -125,14 +125,14 @@ export function combineReducers(reducers) {
    */  
   var finalReducers = pick(reducers, (val) => typeof val === 'function');
   return (state = {}, action) => mapValues(finalReducers,
-  /**
-   * 例子：
-   * reducer = {
-   *    product: productReducer,
-   *    user: userReducer
-   * }
-   * 以key和action作为参数调用productReducer
-   */
+    /**
+     * 例子：
+     * reducer = {
+     *    product: productReducer,
+     *    user: userReducer
+     * }
+     * 以key和action作为参数调用productReducer
+     */
     (reducer, key) => reducer(state[key], action)
   );
 }
